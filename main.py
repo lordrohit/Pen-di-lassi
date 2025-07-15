@@ -27,6 +27,10 @@ dispatcher = updater.dispatcher
 
 # ========== COMMAND HANDLERS ==========
 
+def periodic_scan():
+    while True:
+        run_auto_scan(updater.bot, mode="both")
+        time.sleep(600)  # 600 seconds = 10 minutes
 def handle_longs_command(update, context):
     bot = context.bot
     chat_id = update.effective_chat.id
