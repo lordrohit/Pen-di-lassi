@@ -1,5 +1,3 @@
-import threading
-import time
 import os
 import requests
 import pandas as pd
@@ -27,10 +25,7 @@ dispatcher = updater.dispatcher
 
 # ========== COMMAND HANDLERS ==========
 
-def periodic_scan():
-    while True:
-        run_auto_scan(updater.bot, mode="both")
-        time.sleep(600)  # 600 seconds = 10 minutes threading.Thread(target=periodic_scan, daemon=True).start()
+
 def handle_longs_command(update, context):
     bot = context.bot
     chat_id = update.effective_chat.id
