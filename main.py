@@ -41,6 +41,7 @@ def handle_shorts_command(update, context):
     run_auto_scan(bot, mode="bearish")
 
 # Register commands
+dispatcher.add_error_handler(error_handler)
 dispatcher.add_handler(CommandHandler("longs", handle_longs_command))
 dispatcher.add_handler(CommandHandler("shorts", handle_shorts_command))
 
