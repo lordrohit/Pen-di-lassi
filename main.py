@@ -25,7 +25,9 @@ dispatcher = updater.dispatcher
 
 # ========== COMMAND HANDLERS ==========
 
-
+def error_handler(update, context):
+    print(f"Exception while handling an update: {context.error}")
+    # Optional: You can also log the error to a file or send it to Telegram for alerts
 def handle_longs_command(update, context):
     bot = context.bot
     chat_id = update.effective_chat.id
