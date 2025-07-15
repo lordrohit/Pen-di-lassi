@@ -4,17 +4,29 @@ from dotenv import load_dotenv
 from patterns_custom import detect_all_patterns
 from strategy import calculate_trade_levels
 from datetime import datetime
+import requests
 
 from utils import get_ohlcv, create_chart, send_photo, send_message
 
 load_dotenv()
 
-symbols = [
+def get_futures_symbols():
+    url = "https://fapi.binance.com/fapi/v1/exchangeInfo"
+    res = requests.get(url)
+    data = res.json()
+    return [s['symbol'] for s in data['symbols'] if s['contractType'] == 'PERPETUAL']
+
+# Your preferred symbols to scan (can be more than supported)
+preferred_symbols = [
     "BTCUSDT", "ETHUSDT", "BNBUSDT", "SOLUSDT", "XRPUSDT",
     "ADAUSDT", "DOGEUSDT", "MATICUSDT", "AVAXUSDT", "DOTUSDT",
     "LTCUSDT", "TRXUSDT", "SHIBUSDT", "NEARUSDT", "LINKUSDT",
     "FILUSDT", "ATOMUSDT", "UNIUSDT", "ICPUSDT", "PEPEUSDT"
 ]
+
+# Filter only those supported on Binance Futures PERPETUAL contracts
+futures_symbols = get_futures_symbols()
+symbols = [s for s in preferred_symbols if s in futures_symbols]
 
 log_file = "trades_log.csv"
 
@@ -80,6 +92,5 @@ def run_auto_scan(bot, mode="both"):
                         "Command": mode
                     }
                     pd.DataFrame([log_entry]).to_csv(log_file, mode='a', header=False, index=False)
-
         except Exception as e:
             send_message(bot, f"❌ Error on {symbol}: {e}")
