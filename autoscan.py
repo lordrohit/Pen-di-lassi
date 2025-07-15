@@ -1,3 +1,22 @@
+import requests
+
+def get_futures_symbols():
+    url = "https://fapi.binance.com/fapi/v1/exchangeInfo"
+    res = requests.get(url)
+    data = res.json()
+    return set(s['symbol'] for s in data['symbols'] if s['contractType'] == 'PERPETUAL')
+
+preferred_symbols = [
+    "BTCUSDT", "ETHUSDT", "BNBUSDT", "SOLUSDT", "XRPUSDT",
+    "ADAUSDT", "DOGEUSDT", "MATICUSDT", "AVAXUSDT", "DOTUSDT",
+    "LTCUSDT", "SHIBUSDT", "PEPEUSDT", "NEARUSDT", "LINKUSDT",
+    "FILUSDT", "ATOMUSDT", "UNIUSDT", "ICPUSDT"
+]
+
+futures_symbols = get_futures_symbols()
+symbols = [s for s in preferred_symbols if s in futures_symbols]
+
+# Use 'symbols' in your scan loop
 import os
 import pandas as pd
 from dotenv import load_dotenv
