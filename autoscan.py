@@ -85,32 +85,14 @@ def run_auto_scan(bot, mode="both"):
 
         except Exception as e:
             send_message(bot, f"❌ Error on {symbol}: {e}")
-send_message(bot, "✅ run_smart_scan started")
-async def run_smart_scan():
-    coins = get_futures_symbols()
-    for symbol in coins:send_message(bot, f"🔍 Checking {symbol}")
-        df = get_klines(symbol, interval="15m", lookback="100")
-        if df is None or df.empty:
-            continue
-
-        signals, rsi, vol, avg_vol = smart_trade_signal(df)
-        if signals:
-            direction = signals[0]
-            message = f"""
-🚀 Smart Trade Signal Detected:send_message(bot, f"{symbol} RSI: {round(rsi, 2)}, Vol: {round(vol)} > Avg: {round(avg_vol)}")
-Symbol: {symbol}
-Trend: {direction}
-RSI: {round(rsi, 2)}
-Volume Spike: {round(vol)} > Avg {round(avg_vol)}
-Entry: {df['close'].iloc[-1]}
-Timeframe: 15m
-"""
-            await send_telegram_message(message.strip())
 def run_smart_scan(bot):
     from utils import get_futures_symbols, get_ohlcv, send_message
+    from strategy import smart_trade_signal
 
     TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
     coins = get_futures_symbols()
+
+    send_message(bot, f"🧠 SmartScan started for {len(coins)} coins...")
 
     for symbol in coins:
         df = get_ohlcv(symbol, interval="15m", limit=100)
@@ -125,7 +107,7 @@ def run_smart_scan(bot):
 Symbol: {symbol}
 Trend: {direction}
 RSI: {round(rsi, 2)}
-Volume Spike: {round(vol)} > Avg {round(avg_vol)}
+Volume: {round(vol)} > Avg: {round(avg_vol)}
 Entry: {df['close'].iloc[-1]}
 Timeframe: 15m
 """
