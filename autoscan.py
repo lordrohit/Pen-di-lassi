@@ -100,6 +100,10 @@ def run_smart_scan(bot):
             continue
 
         signals, rsi, vol, avg_vol = smart_trade_signal(df)
+
+        # Debug log to see what's happening
+        send_message(bot, f"🔍 {symbol} | RSI: {rsi:.2f} | Vol: {vol:.2f} > Avg: {avg_vol:.2f} | Signal: {signals}")
+
         if signals:
             direction = signals[0]
             message = f"""
@@ -107,7 +111,7 @@ def run_smart_scan(bot):
 Symbol: {symbol}
 Trend: {direction}
 RSI: {round(rsi, 2)}
-Volume: {round(vol)} > Avg: {round(avg_vol)}
+Volume: {round(vol)} > Avg {round(avg_vol)}
 Entry: {df['close'].iloc[-1]}
 Timeframe: 15m
 """
