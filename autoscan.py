@@ -104,3 +104,27 @@ Entry: {df['close'].iloc[-1]}
 Timeframe: 15m
 """
             await send_telegram_message(message.strip())
+def run_smart_scan(bot):
+    from utils import get_futures_symbols, get_ohlcv, send_message
+
+    TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
+    coins = get_futures_symbols()
+
+    for symbol in coins:
+        df = get_ohlcv(symbol, interval="15m", limit=100)
+        if df is None or df.empty:
+            continue
+
+        signals, rsi, vol, avg_vol = smart_trade_signal(df)
+        if signals:
+            direction = signals[0]
+            message = f"""
+🚀 Smart Trade Signal Detected:
+Symbol: {symbol}
+Trend: {direction}
+RSI: {round(rsi, 2)}
+Volume Spike: {round(vol)} > Avg {round(avg_vol)}
+Entry: {df['close'].iloc[-1]}
+Timeframe: 15m
+"""
+            send_message(bot, message.strip())
