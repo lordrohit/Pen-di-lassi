@@ -6,6 +6,7 @@ import mplfinance as mpf
 from dotenv import load_dotenv
 from ta.trend import EMAIndicator
 from ta.momentum import RSIIndicator
+from autoscan import run_smart_scan
 
 from telegram.ext import Updater, CommandHandler
 from autoscan import run_auto_scan
@@ -39,11 +40,17 @@ def handle_shorts_command(update, context):
     chat_id = update.effective_chat.id
     bot.send_message(chat_id=chat_id, text="🔴 Scanning for bearish trade setups...")
     run_auto_scan(bot, mode="bearish")
+def handle_smartscan_command(update, context):
+    bot = context.bot
+    chat_id = update.effective_chat.id
+    bot.send_message(chat_id=chat_id, text="🧠 Running smart RSI/EMA/Volume scan...")
+    run_smart_scan(bot)
 
 # Register commands
 dispatcher.add_error_handler(error_handler)
 dispatcher.add_handler(CommandHandler("longs", handle_longs_command))
 dispatcher.add_handler(CommandHandler("shorts", handle_shorts_command))
+dispatcher.add_handler(CommandHandler("smartscan", handle_smartscan_command))
 
 # ========== OHLCV FETCHER (USED BY autoscan) ==========
 
