@@ -5,6 +5,7 @@ from patterns_custom import detect_all_patterns
 from strategy import calculate_trade_levels
 from datetime import datetime
 from strategy import smart_trade_signal
+from utils import get_futures_symbols
 
 from utils import get_ohlcv, create_chart, send_photo, send_message
 
