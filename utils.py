@@ -67,3 +67,19 @@ def calculate_atr(df, period=14):
     tr = df[['H-L', 'H-PC', 'L-PC']].max(axis=1)
     atr = tr.rolling(window=period).mean()
     return atr
+# ✅ Fetch all USDT-margined futures symbols from Binance
+def get_futures_symbols():
+    try:
+        url = "https://fapi.binance.com/fapi/v1/exchangeInfo"
+        res = requests.get(url, timeout=5)
+        res.raise_for_status()
+        data = res.json()
+        symbols = [
+            s["symbol"]
+            for s in data["symbols"]
+            if s["contractType"] == "PERPETUAL" and s["quoteAsset"] == "USDT" and s["status"] == "TRADING"
+        ]
+        return symbols
+    except Exception as e:
+        print(f"❌ Error fetching futures symbols: {e}")
+        return []
