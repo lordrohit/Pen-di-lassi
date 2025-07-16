@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 from ta.trend import EMAIndicator
 from ta.momentum import RSIIndicator
 from autoscan import run_smart_scan
+from utils import is_within_working_hours
 
 from telegram.ext import Updater, CommandHandler
 from autoscan import run_auto_scan
