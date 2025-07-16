@@ -84,9 +84,10 @@ def run_auto_scan(bot, mode="both"):
 
         except Exception as e:
             send_message(bot, f"❌ Error on {symbol}: {e}")
+send_message(bot, "✅ run_smart_scan started")
 async def run_smart_scan():
     coins = get_futures_symbols()
-    for symbol in coins:
+    for symbol in coins:send_message(bot, f"🔍 Checking {symbol}")
         df = get_klines(symbol, interval="15m", lookback="100")
         if df is None or df.empty:
             continue
@@ -95,7 +96,7 @@ async def run_smart_scan():
         if signals:
             direction = signals[0]
             message = f"""
-🚀 Smart Trade Signal Detected:
+🚀 Smart Trade Signal Detected:send_message(bot, f"{symbol} RSI: {round(rsi, 2)}, Vol: {round(vol)} > Avg: {round(avg_vol)}")
 Symbol: {symbol}
 Trend: {direction}
 RSI: {round(rsi, 2)}
