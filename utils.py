@@ -83,3 +83,11 @@ def get_futures_symbols():
     except Exception as e:
         print(f"❌ Error fetching futures symbols: {e}")
         return []
+from datetime import datetime, time
+
+# ✅ Only allow between 5:00 AM to 11:59 PM
+def is_within_working_hours():
+    now = datetime.now().time()
+    start_time = time(5, 0)     # 5:00 AM
+    end_time = time(23, 59)     # 11:59 PM
+    return start_time <= now <= end_time
