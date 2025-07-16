@@ -33,20 +33,34 @@ def error_handler(update, context):
 def handle_longs_command(update, context):
     bot = context.bot
     chat_id = update.effective_chat.id
+
+    if not is_within_working_hours():
+        bot.send_message(chat_id=chat_id, text="⏱ Bot active only from 5:00 AM to 12:00 AM.")
+        return
+
     bot.send_message(chat_id=chat_id, text="🟢 Scanning for bullish trade setups...")
     run_auto_scan(bot, mode="bullish")
 
 def handle_shorts_command(update, context):
     bot = context.bot
     chat_id = update.effective_chat.id
+
+    if not is_within_working_hours():
+        bot.send_message(chat_id=chat_id, text="⏱ Bot active only from 5:00 AM to 12:00 AM.")
+        return
+
     bot.send_message(chat_id=chat_id, text="🔴 Scanning for bearish trade setups...")
     run_auto_scan(bot, mode="bearish")
 def handle_smartscan_command(update, context):
     bot = context.bot
     chat_id = update.effective_chat.id
-    bot.send_message(chat_id=chat_id, text="🧠 Running smart RSI/EMA/Volume scan...")
-    run_smart_scan(bot)
 
+    if not is_within_working_hours():
+        bot.send_message(chat_id=chat_id, text="⏱ Bot active only from 5:00 AM to 12:00 AM.")
+        return
+
+    bot.send_message(chat_id=chat_id, text="🧠 Running smart scan...")
+    run_smart_scan(bot)
 # Register commands
 dispatcher.add_error_handler(error_handler)
 dispatcher.add_handler(CommandHandler("longs", handle_longs_command))
