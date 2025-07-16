@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 from patterns_custom import detect_all_patterns
 from strategy import calculate_trade_levels
 from datetime import datetime
+from strategy import smart_trade_signal
 
 from utils import get_ohlcv, create_chart, send_photo, send_message
 
@@ -83,3 +84,23 @@ def run_auto_scan(bot, mode="both"):
 
         except Exception as e:
             send_message(bot, f"❌ Error on {symbol}: {e}")
+async def run_smart_scan():
+    coins = get_futures_symbols()
+    for symbol in coins:
+        df = get_klines(symbol, interval="15m", lookback="100")
+        if df is None or df.empty:
+            continue
+
+        signals, rsi, vol, avg_vol = smart_trade_signal(df)
+        if signals:
+            direction = signals[0]
+            message = f"""
+🚀 Smart Trade Signal Detected:
+Symbol: {symbol}
+Trend: {direction}
+RSI: {round(rsi, 2)}
+Volume Spike: {round(vol)} > Avg {round(avg_vol)}
+Entry: {df['close'].iloc[-1]}
+Timeframe: 15m
+"""
+            await send_telegram_message(message.strip())
