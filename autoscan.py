@@ -115,3 +115,5 @@ Entry: {df['close'].iloc[-1]}
 Timeframe: 15m
 """
             send_message(bot, message.strip())
+# ✅ End message
+    send_message(bot, "✅ SmartScan complete.")
