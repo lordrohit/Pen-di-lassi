@@ -4,6 +4,8 @@ import pandas as pd
 from dotenv import load_dotenv
 from io import BytesIO
 import mplfinance as mpf
+from datetime import datetime
+import pytz
 
 load_dotenv()
 
@@ -85,9 +87,10 @@ def get_futures_symbols():
         return []
 from datetime import datetime, time
 
-# ✅ Only allow between 5:00 AM to 11:59 PM
 def is_within_working_hours():
-    now = datetime.now().time()
-    start_time = time(5, 0)     # 5:00 AM
-    end_time = time(23, 59)     # 11:59 PM
-    return start_time <= now <= end_time
+    india_timezone = pytz.timezone('Asia/Kolkata')
+    current_time = datetime.now(india_timezone)
+    start_hour = 5  # 5:00 AM
+    end_hour = 24   # 12:00 AM (midnight)
+
+    return start_hour <= current_time.hour < end_hour
