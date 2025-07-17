@@ -69,3 +69,31 @@ def smart_trade_signal(df):
         signals.append("SHORT")
 
     return signals, df['RSI'].iloc[-1], latest_volume, avg_volume
+def score_trade(rsi, volume, avg_volume, pattern, ma_below, direction):
+    score = 0
+    
+    if direction == "SHORT" and rsi < 45:
+        score += 20
+    elif direction == "LONG" and rsi > 55:
+        score += 20
+    
+    if volume > avg_volume * 1.5:
+        score += 25
+    elif volume > avg_volume * 1.2:
+        score += 15
+
+    if pattern in ["Bearish Engulfing", "Breakout", "Double Top", "Evening Star"]:
+        score += 20
+
+    if ma_below:
+        score += 15
+
+    return score
+
+def trade_quality(score):
+    if score >= 70:
+        return "🔥 ULTRA RARE"
+    elif score >= 50:
+        return "⚡ HIGH PROBABILITY"
+    else:
+        return "🌱 NORMAL"
