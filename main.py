@@ -60,12 +60,24 @@ def handle_smartscan_command(update, context):
         return
     bot.send_message(chat_id=chat_id, text="🧠 Running smart scan...")
     run_smart_scan(bot)
+def handle_top3_command(update, context):
+    bot = context.bot
+    chat_id = update.effective_chat.id
+
+    if not is_within_working_hours():
+        bot.send_message(chat_id=chat_id, text="⏱ Bot active only from 5:00 AM to 12:00 AM.")
+        return
+
+    bot.send_message(chat_id=chat_id, text="📊 Scanning all coins to find the Top 3 setups...")
+    from autoscan import run_top3_scan
+    run_top3_scan(bot, chat_id)
 
 # Register commands
 dispatcher.add_error_handler(error_handler)
 dispatcher.add_handler(CommandHandler("longs", handle_longs_command))
 dispatcher.add_handler(CommandHandler("shorts", handle_shorts_command))
 dispatcher.add_handler(CommandHandler("smartscan", handle_smartscan_command))
+dispatcher.add_handler(CommandHandler("top3", handle_top3_command))
 
 # ========== OHLCV FETCHER ==========
 
