@@ -117,3 +117,52 @@ Timeframe: 15m
             send_message(bot, message.strip())
 # ✅ End message
     send_message(bot, "✅ SmartScan complete.")
+def run_top3_scan(bot, chat_id):
+    from utils import get_futures_symbols, get_ohlcv, send_photo
+    from patterns_custom import detect_all_patterns
+    from strategy import calculate_trade_levels
+
+    results = []
+    symbols = get_futures_symbols()
+
+    for symbol in symbols:
+        df = get_ohlcv(symbol, interval="15m")
+        if df is None or df.empty:
+            continue
+
+        patterns = detect_all_patterns(df)
+        for pattern in patterns:
+            levels = calculate_trade_levels(df, pattern)
+            if not levels:
+                continue
+
+            entry = levels['entry']
+            stop = levels['stop_loss']
+            target = levels['take_profit']
+
+            if entry and stop and target:
+                potential_profit = abs((target - entry) / (entry)) * 100
+                results.append({
+                    'symbol': symbol,
+                    'pattern': pattern['name'],
+                    'direction': pattern['direction'],
+                    'entry': entry,
+                    'stop': stop,
+                    'target': target,
+                    'profit_pct': round(potential_profit, 2)
+                })
+
+    # Sort by potential profit %
+    results = sorted(results, key=lambda x: x['profit_pct'], reverse=True)
+
+    top3 = results[:3]
+    for trade in top3:
+        message = f"""📈 Top Setup:
+Symbol: {trade['symbol']}
+Pattern: {trade['pattern']} ({trade['direction']})
+Entry: {trade['entry']}
+Stop Loss: {trade['stop']}
+Target: {trade['target']}
+Potential Profit: {trade['profit_pct']}%
+"""
+        bot.send_message(chat_id=chat_id, text=message)
