@@ -2,7 +2,7 @@ def detect_all_patterns(df):
     patterns = []
 
     # ❗ Skip if DataFrame too short
-    if df is None or len(df) < 20:
+    if df is None or len(df) < 200:
         return []
 
     try:
@@ -18,6 +18,7 @@ def detect_all_patterns(df):
         # ➕ Calculate EMAs
         df['EMA20'] = df['close'].ewm(span=20, adjust=False).mean()
         df['EMA50'] = df['close'].ewm(span=50, adjust=False).mean()
+        df['EMA200'] = df['close'].ewm(span=200, adjust=False).mean()
 
         # Clean the last two rows for pattern checks
         last = df.iloc[-1]
@@ -38,6 +39,18 @@ def detect_all_patterns(df):
         # ✅ RSI Overbought Drop
         if last['RSI'] < 70 and prev['RSI'] > 70:
             patterns.append({"name": "RSI Overbought Drop", "direction": "bearish"})
+
+        # ✅ EMA Pullback Bounce (PRICE < EMA50 & EMA200, then starts rising)
+        if (
+            prev['close'] < prev['EMA50'] and prev['close'] < prev['EMA200'] and
+            last['close'] > prev['close'] and
+            last['RSI'] > prev['RSI'] and
+            last['close'] > last['EMA20']
+        ):
+            patterns.append({
+                "name": "EMA Pullback Bounce (Below 50/200)", 
+                "direction": "bullish"
+            })
 
     except Exception as e:
         print(f"⚠️ Pattern detection failed: {e}")
