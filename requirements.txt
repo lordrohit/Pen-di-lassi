@@ -6,3 +6,4 @@ mplfinance
 ta
 python-dotenv
 requests
+pytz
