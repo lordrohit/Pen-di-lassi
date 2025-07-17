@@ -101,6 +101,8 @@ def run_smart_scan(bot):
 
         signals, rsi, vol, avg_vol = smart_trade_signal(df)
 
+if signals:
+    send_message(bot, f"🚀 SIGNAL on {symbol} | RSI: {rsi:.2f} | Vol: {vol:.2f} > Avg: {avg_vol:.2f} | Signal: {signals}")
 
         if signals:
             direction = signals[0]
