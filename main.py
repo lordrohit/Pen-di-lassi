@@ -9,7 +9,7 @@ from ta.momentum import RSIIndicator
 from autoscan import run_smart_scan
 from utils import is_within_working_hours
 from apscheduler.schedulers.background import BackgroundScheduler
-import time
+import pytz
 
 from telegram.ext import Updater, CommandHandler
 from autoscan import run_auto_scan
@@ -30,7 +30,7 @@ dispatcher = updater.dispatcher
 bot = updater.bot
 
 # ✅ Set up scheduler to run smart scan every 10 minutes
-scheduler = BackgroundScheduler()
+scheduler = BackgroundScheduler(timezone=pytz.timezone('Asia/Kolkata'))
 scheduler.add_job(lambda: run_smart_scan(bot), 'interval', minutes=10)
 scheduler.start()
 
