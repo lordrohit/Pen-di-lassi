@@ -20,7 +20,7 @@ def detect_all_patterns(df):
         df['EMA50'] = df['close'].ewm(span=50, adjust=False).mean()
         df['EMA200'] = df['close'].ewm(span=200, adjust=False).mean()
 
-        # Clean the last two rows for pattern checks
+        # 🔍 Last and previous candle
         last = df.iloc[-1]
         prev = df.iloc[-2]
 
@@ -40,7 +40,7 @@ def detect_all_patterns(df):
         if last['RSI'] < 70 and prev['RSI'] > 70:
             patterns.append({"name": "RSI Overbought Drop", "direction": "bearish"})
 
-        # ✅ EMA Pullback Bounce (PRICE < EMA50 & EMA200, then starts rising)
+        # ✅ EMA Pullback Bounce
         if (
             prev['close'] < prev['EMA50'] and prev['close'] < prev['EMA200'] and
             last['close'] > prev['close'] and
