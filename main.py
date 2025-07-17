@@ -8,6 +8,8 @@ from ta.trend import EMAIndicator
 from ta.momentum import RSIIndicator
 from autoscan import run_smart_scan
 from utils import is_within_working_hours
+from apscheduler.schedulers.background import BackgroundScheduler
+import time
 
 from telegram.ext import Updater, CommandHandler
 from autoscan import run_auto_scan
@@ -24,6 +26,13 @@ BASE_URL = "https://fapi.binance.com"
 # Set up Telegram bot
 updater = Updater(token=TELEGRAM_BOT_TOKEN, use_context=True)
 dispatcher = updater.dispatcher
+# ✅ Get bot instance for scheduler
+bot = updater.bot
+
+# ✅ Set up scheduler to run smart scan every 10 minutes
+scheduler = BackgroundScheduler()
+scheduler.add_job(lambda: run_smart_scan(bot), 'interval', minutes=10)
+scheduler.start()
 
 # ========== COMMAND HANDLERS ==========
 
